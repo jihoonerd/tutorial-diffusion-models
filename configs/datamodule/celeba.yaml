@@ -1,0 +1,7 @@
+_target_: src.datamodules.celeba_datamodule.CELEBADataModule
+
+data_dir: ${data_dir} # data_dir is specified in config.yaml
+batch_size: 64
+num_workers: 8
+pin_memory: False
+res: 128

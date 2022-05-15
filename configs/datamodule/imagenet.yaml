@@ -1,0 +1,7 @@
+_target_: src.datamodules.imagenet_datamodule.ImageNetDataModule
+
+data_dir: /data/opensets/imagenet-pytorch
+batch_size: 64
+num_workers: 8
+pin_memory: False
+res: 28

@@ -1,0 +1,6 @@
+_target_: src.datamodules.cifar10_datamodule.CIFAR10DataModule
+
+data_dir: ${data_dir} # data_dir is specified in config.yaml
+batch_size: 64
+num_workers: 8
+pin_memory: False

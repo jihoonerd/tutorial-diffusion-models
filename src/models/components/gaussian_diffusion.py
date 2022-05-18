@@ -268,7 +268,7 @@ class GaussianDiffusion:
             if self.model_var_type == ModelVarType.LEARNED:
                 model_log_variance = model_var_values
                 model_variance = th.exp(model_log_variance)
-            else:
+            else:  # Model Variance Type is a "Learned Range"
                 min_log = _extract_into_tensor(
                     self.posterior_log_variance_clipped, t, x.shape
                 )
@@ -304,17 +304,17 @@ class GaussianDiffusion:
             pred_xstart = process_xstart(
                 self._predict_xstart_from_xprev(x_t=x, t=t, xprev=model_output)
             )
-            model_mean = model_output
+            model_mean = model_output  # Directly predict x_{t-1}
         elif self.model_mean_type in [ModelMeanType.START_X, ModelMeanType.EPSILON]:
             if self.model_mean_type == ModelMeanType.START_X:
                 pred_xstart = process_xstart(model_output)
             else:
                 pred_xstart = process_xstart(
                     self._predict_xstart_from_eps(x_t=x, t=t, eps=model_output)
-                )
+                ) # Make model to predict epsilon. Following part does not have learnable parameters.
             model_mean, _, _ = self.q_posterior_mean_variance(
                 x_start=pred_xstart, x_t=x, t=t
-            )
+            )  
         else:
             raise NotImplementedError(self.model_mean_type)
 
@@ -333,7 +333,7 @@ class GaussianDiffusion:
         return (
             _extract_into_tensor(self.sqrt_recip_alphas_cumprod, t, x_t.shape) * x_t
             - _extract_into_tensor(self.sqrt_recipm1_alphas_cumprod, t, x_t.shape) * eps
-        )
+        )  # Refer to [1]-(4),(10)
 
     def _predict_xstart_from_xprev(self, x_t, t, xprev):
         assert x_t.shape == xprev.shape
@@ -343,7 +343,7 @@ class GaussianDiffusion:
                 self.posterior_mean_coef2 / self.posterior_mean_coef1, t, x_t.shape
             )
             * x_t
-        )
+        )  # This is calculated from [1]-(7), rephrased to x_0.
 
     def _predict_eps_from_xstart(self, x_t, t, pred_xstart):
         return (

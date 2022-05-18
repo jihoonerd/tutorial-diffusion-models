@@ -19,8 +19,8 @@ Install dependencies
 
 ```bash
 # clone project
-git clone https://github.com/YourGithubName/your-repo-name
-cd your-repo-name
+git clone https://github.com/jihoonerd/tutorial-diffusion-models
+cd tutorial-diffusion-models
 
 # [OPTIONAL] create conda environment
 conda create -n myenv python=3.8

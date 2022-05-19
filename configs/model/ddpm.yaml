@@ -5,21 +5,26 @@ model_mean_type: "epsilon"
 model_var_type: "learned_range"
 loss_type: "rescaled_mse"
 schedule_sampler: "uniform"
-lr: 0.0001
+lr: 0.00005
 weight_decay: 0.0
-ema_start: 1000
+ema_start: 100
 ema_update: 10
-ema_decay: 0.995
-sample_every: 2000
+ema_decay: 0.99
+sample_every: 1000
 num_sample_imgs: 9
 
 net:
   _target_: src.models.components.unet.UNetModel
   image_size: 32
   in_channels: 3
-  model_channels: 128
+  model_channels: 256
   out_channels: 6  # (3 if not learn_sigma else 6)
-  num_res_blocks: 3
+  num_res_blocks: 2
   attention_resolutions: [2, 4, 8]  # image_size // int(res) = attention resolution
-  dropout: 0.1
+  dropout: 0.0
   channel_mult: [1, 2, 3, 4]
+  conv_resample: True
+  dims: 2
+  num_heads: 4
+  use_scale_shift_norm: True
+  resblock_updown: True

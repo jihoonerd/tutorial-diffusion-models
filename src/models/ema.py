@@ -13,6 +13,13 @@ class EMAModel(nn.Module):
         self.model.eval()
         self.decay = decay
 
+    def set(self, model):
+        with torch.no_grad():
+            for ema_w, model_w in zip(
+                self.model.state_dict().values(), model.state_dict().values()
+            ):
+                ema_w.copy_(model_w)
+
     def update(self, model):
         with torch.no_grad():
             for ema_w, model_w in zip(

@@ -54,12 +54,9 @@ class DDPMLitModule(LightningModule):
 
         self.ema_model = EMAModel(model=self.net, decay=self.hparams.ema_decay)
 
-    def reset_ema_parameters(self):
-        self.ema_model.model.load_state_dict(self.net.state_dict())
-
     def step_ema(self):
         if self.global_step <= self.hparams.ema_start:
-            self.reset_ema_parameters()
+            self.ema_model.set(self.net)
         else:
             self.ema_model.update(self.net)
 
@@ -80,6 +77,7 @@ class DDPMLitModule(LightningModule):
             self.schedule_sampler.update_with_local_losses(t, losses["loss"].detach())
 
         loss = (losses["loss"] * weights).mean()
+        # TODO: log detailed loss
         self.log("loss", loss)
         return loss
 

@@ -78,7 +78,10 @@ class DDPMLitModule(LightningModule):
 
         loss = (losses["loss"] * weights).mean()
         # TODO: log detailed loss
-        self.log("loss", loss)
+        self.log("train/loss", loss)
+        self.log("train/unweighted/vb", losses["vb"].mean().item())
+        self.log("train/unweighted/mse", losses["mse"].mean().item())
+        self.log("train/unweighted/loss", losses["loss"].mean().item())
         return loss
 
     def on_train_batch_end(self, outputs, batch, batch_idx):
@@ -88,6 +91,7 @@ class DDPMLitModule(LightningModule):
 
         if self.global_step % self.hparams.sample_every == 0:
             res = self.net.image_size
+            self.ema_model.model.eval()
             sampled_img = self.diffusion.p_sample_loop(
                 model=self.ema_model.model,
                 shape=(self.hparams.num_sample_imgs, 3, res, res),

@@ -70,6 +70,7 @@ class DDPMLitModule(LightningModule):
 
     def training_step(self, batch):
         img, label = batch
+        img = img * 2 - 1  # Move image to [-1, 1]
         t, weights = self.schedule_sampler.sample(img.shape[0], self.device)
         losses = self.diffusion.training_losses(self.net, img, t)
 
@@ -96,6 +97,7 @@ class DDPMLitModule(LightningModule):
                 model=self.ema_model.model,
                 shape=(self.hparams.num_sample_imgs, 3, res, res),
             )
+            sampled_img = (sampled_img + 1) * 0.5  # Unnormalize to [-1, 1]
             grid_img = make_grid(
                 sampled_img, nrow=int(math.sqrt(self.hparams.num_sample_imgs))
             )

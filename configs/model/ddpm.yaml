@@ -8,7 +8,7 @@ schedule_sampler: "uniform"
 lr: 0.0001
 weight_decay: 0.0
 ema_start: 1000
-ema_update: 20
+ema_update: 10
 ema_decay: 0.995
 sample_every: 2000
 num_sample_imgs: 9
